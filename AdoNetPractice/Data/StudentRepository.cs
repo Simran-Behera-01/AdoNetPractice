@@ -115,5 +115,39 @@ namespace AdoNetPractice.Data
             }
             return rowsAffected != 0;
         }
+
+        public bool UpdateStudent(Student student)
+        {
+            int rowsAffected = 0;
+            try
+            {
+                using var connection = _connectionFactory.CreateConnection();
+                connection.Open();
+                const string query = @"UPDATE Students
+                                       SET FirstName = @FirstName,
+                                           LastName = @LastName,
+                                           Age =  @Age,
+                                           Email = @Email,
+                                           PhoneNumber = @PhoneNumber,
+                                           Percentage = @Percentage,
+                                           DepartmentId = @DepartmentId 
+                                       WHERE StudentId = @StudentId";
+                using var command = new SqlCommand(query, connection);
+                command.Parameters.AddWithValue("@FirstName", student.FirstName);
+                command.Parameters.AddWithValue("@LastName", student.LastName);
+                command.Parameters.AddWithValue("@Age", student.Age);
+                command.Parameters.AddWithValue("@Email", student.Email);
+                command.Parameters.AddWithValue("@PhoneNumber", student.PhoneNumber);
+                command.Parameters.AddWithValue("@Percentage", student.Percentage);
+                command.Parameters.AddWithValue("@DepartmentId", student.DepartmentId);
+                command.Parameters.AddWithValue("@StudentId", student.Id);
+                rowsAffected = command.ExecuteNonQuery();
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine($"Error : {ex.Message}");
+            }
+            return rowsAffected != 0;
+        }
     }
 }
