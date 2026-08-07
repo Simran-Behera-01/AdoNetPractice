@@ -44,5 +44,38 @@ namespace AdoNetPractice.Data
             return students;
         }
 
+        public Student? GetStudentById(int id)
+        {
+            Student? student = null;
+            try
+            {
+                using var connection = _connectionFactory.CreateConnection();
+                connection.Open();
+                using var command = new SqlCommand("SELECT * FROM Students WHERE StudentId = @Id", connection);
+                command.Parameters.AddWithValue("@Id", id);
+                using var reader = command.ExecuteReader();
+                if (reader.Read())
+                {
+                    student = new Student
+                    {
+                        Id = (int)reader["StudentId"],
+                        FirstName = (string)reader["FirstName"],
+                        LastName = (string)reader["LastName"],
+                        Age = (int)reader["Age"],
+                        Email = (string)reader["Email"],
+                        PhoneNumber = (string)reader["PhoneNumber"],
+                        Percentage = Convert.ToDouble(reader["Percentage"]),
+                        DepartmentId = (int)reader["DepartmentId"]
+                    };
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine($"Error : {ex.Message}");
+            }
+            return student;
+        }
+
+
     }
 }
