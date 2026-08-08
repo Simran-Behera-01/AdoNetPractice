@@ -149,5 +149,25 @@ namespace AdoNetPractice.Data
             }
             return rowsAffected != 0;
         }
+
+        public bool DeleteStudent(int id)
+        {
+            int rowsAffected = 0;
+            try
+            {
+                using var connection = _connectionFactory.CreateConnection();
+                connection.Open();
+                const string query = @"DELETE FROM Students
+                                       WHERE StudentId = @StudentId";
+                using var command = new SqlCommand(query, connection);
+                command.Parameters.AddWithValue("@StudentId", id);
+                rowsAffected = command.ExecuteNonQuery();
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine($"Error : {ex.Message}");
+            }
+            return rowsAffected != 0;
+        }
     }
 }
