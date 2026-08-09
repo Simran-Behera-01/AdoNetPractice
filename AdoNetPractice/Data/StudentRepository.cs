@@ -37,12 +37,12 @@ namespace AdoNetPractice.Data
                             DepartmentId = (int)reader["DepartmentId"]
                         });
                 }
+                return students;
             }
             catch (SqlException ex)
             {
-                Console.WriteLine($"Error : {ex.Message}");
+                throw;
             }
-            return students;
         }
 
         public Student? GetStudentById(int id)
@@ -69,12 +69,12 @@ namespace AdoNetPractice.Data
                         DepartmentId = (int)reader["DepartmentId"]
                     };
                 }
+                return student;
             }
             catch (SqlException ex)
             {
-                Console.WriteLine($"Error : {ex.Message}");
+                throw;
             }
-            return student;
         }
 
         public bool AddStudent(Student student)
@@ -109,12 +109,12 @@ namespace AdoNetPractice.Data
                 command.Parameters.AddWithValue("@Percentage", student.Percentage);
                 command.Parameters.AddWithValue("@DepartmentId", student.DepartmentId);
                 rowsAffected = command.ExecuteNonQuery();
+                return rowsAffected != 0;
             }
             catch (SqlException ex)
             {
-                Console.WriteLine($"Error : {ex.Message}");
+                throw;
             }
-            return rowsAffected != 0;
         }
 
         public bool UpdateStudent(Student student)
@@ -143,12 +143,12 @@ namespace AdoNetPractice.Data
                 command.Parameters.AddWithValue("@DepartmentId", student.DepartmentId);
                 command.Parameters.AddWithValue("@StudentId", student.Id);
                 rowsAffected = command.ExecuteNonQuery();
+                return rowsAffected != 0;
             }
             catch (SqlException ex)
             {
-                Console.WriteLine($"Error : {ex.Message}");
+                throw;
             }
-            return rowsAffected != 0;
         }
 
         public bool DeleteStudent(int id)
@@ -163,12 +163,12 @@ namespace AdoNetPractice.Data
                 using var command = new SqlCommand(query, connection);
                 command.Parameters.AddWithValue("@StudentId", id);
                 rowsAffected = command.ExecuteNonQuery();
+                return rowsAffected != 0;
             }
             catch (SqlException ex)
             {
-                Console.WriteLine($"Error : {ex.Message}");
+                throw;
             }
-            return rowsAffected != 0;
         }
 
         public bool EnrollStudent(Student student)
@@ -228,14 +228,13 @@ namespace AdoNetPractice.Data
                 catch (Exception ex) 
                 {
                     transaction.Rollback();
-                    Console.WriteLine(ex.Message);
+                    throw;
                 }
             }
             catch (SqlException ex)
             {
-                Console.WriteLine(ex.Message);
+                throw;
             }
-            return false;
         }
         
         public List<Student> GetStudentsByDepartment(int departmentId)
@@ -265,12 +264,12 @@ namespace AdoNetPractice.Data
                              DepartmentId = (int)reader["DepartmentId"]
                          });
                 }
+                return students;
             }
-            catch(SqlException ex)
+            catch (SqlException ex)
             {
-                Console.WriteLine(ex.Message);
+                throw;
             }
-            return students;
         }
 
         public (int,int,double) GetDepartmentStatistics(int departmentId)
@@ -296,9 +295,8 @@ namespace AdoNetPractice.Data
             }
             catch (SqlException ex)
             {
-                Console.WriteLine(ex.Message);
+                throw;
             }
-            return (0, 0, 0);
         }
     }
 }
