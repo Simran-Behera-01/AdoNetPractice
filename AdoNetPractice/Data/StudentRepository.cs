@@ -224,16 +224,17 @@ namespace AdoNetPractice.Data
                     transaction.Commit();
                     return true;
                 }
-                catch (Exception ex)
+                catch (Exception ex) 
                 {
-                    transaction.Rollback();
-                    return false;
+                    transaction.Rollback(); 
+                    Console.WriteLine(ex.Message); 
                 }
             }
-            catch(SqlException ex)
-            {
-                return false;
+            catch (SqlException ex) 
+            { 
+                Console.WriteLine(ex.Message);
             }
+            return false;
         }
     }
 }
