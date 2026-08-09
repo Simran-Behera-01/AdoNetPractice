@@ -21,7 +21,8 @@ namespace AdoNetPractice
                     Console.WriteLine("5.Delete student");
                     Console.WriteLine("6.Enroll student");
                     Console.WriteLine("7.Get students by department");
-                    Console.WriteLine("8.Exit");
+                    Console.WriteLine("8.Get department statistics");
+                    Console.WriteLine("9.Exit");
 
                     Console.WriteLine("Enter your choice");
                     choice = int.Parse(Console.ReadLine());
@@ -188,6 +189,17 @@ namespace AdoNetPractice
                             }
                             break;
                         case 8:
+                            Console.WriteLine("Enter department id to get statistics:");
+                            int departmentIdForStats = int.Parse(Console.ReadLine());
+                            var stats = _studentRepository.GetDepartmentStatistics(departmentIdForStats);
+                            if(stats.Item1 == 0)
+                            {
+                                Console.WriteLine("No students found in this department");
+                                break;
+                            }
+                            Console.WriteLine($"Total Students: {stats.Item2}, Average Percentage: {stats.Item3}");
+                            break;
+                        case 9:
                             return;
                         default:
                             Console.WriteLine("Invalid choice");

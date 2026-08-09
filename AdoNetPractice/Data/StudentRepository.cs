@@ -272,5 +272,33 @@ namespace AdoNetPractice.Data
             }
             return students;
         }
+
+        public (int,int,double) GetDepartmentStatistics(int departmentId)
+        {
+            try
+            {
+                using var connection = _connectionFactory.CreateConnection();
+                connection.Open();
+                using var command = new SqlCommand("GetDepartmentStatistics", connection);
+                command.CommandType = CommandType.StoredProcedure;
+                command.Parameters.Add("@DepartmentId", SqlDbType.Int).Value = departmentId;
+                var studentCountOutput = new SqlParameter("@StudentCount", SqlDbType.Int);
+                studentCountOutput.Direction = ParameterDirection.Output;
+                command.Parameters.Add(studentCountOutput);
+                var studentAverageOutput = new SqlParameter("@AveragePercentage", SqlDbType.Decimal);
+                studentAverageOutput.Direction = ParameterDirection.Output;
+                command.Parameters.Add(studentAverageOutput);
+                var departmentExists = new SqlParameter();
+                departmentExists.Direction = ParameterDirection.ReturnValue;
+                command.Parameters.Add(departmentExists);
+                command.ExecuteNonQuery();
+                return (Convert.ToInt32(departmentExists.Value), studentCountOutput.Value == DBNull.Value ? 0 : Convert.ToInt32(studentCountOutput.Value), studentAverageOutput.Value==DBNull.Value ? 0 :  Convert.ToDouble(studentAverageOutput.Value));
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return (0, 0, 0);
+        }
     }
 }
