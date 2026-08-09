@@ -169,5 +169,71 @@ namespace AdoNetPractice.Data
             }
             return rowsAffected != 0;
         }
+
+        public bool EnrollStudent(Student student)
+        {
+            try
+            {
+                using var connection = _connectionFactory.CreateConnection();
+                connection.Open();
+                using var transaction = connection.BeginTransaction();
+                try
+                {
+                    const string query1 = @"INSERT INTO Students(
+                                FirstName,
+                                LastName,
+                                Age,
+                                Email,
+                                PhoneNumber,
+                                Percentage,
+                                DepartmentId) 
+                            VALUES
+                                (@FirstName,
+                                @LastName,
+                                @Age,
+                                @Email,
+                                @PhoneNumber,
+                                @Percentage, 
+                                @DepartmentId);
+                            SELECT SCOPE_IDENTITY();";
+                    using var command1 = new SqlCommand(query1, connection, transaction);
+                    command1.Parameters.AddWithValue("@FirstName", student.FirstName);
+                    command1.Parameters.AddWithValue("@LastName", student.LastName);
+                    command1.Parameters.AddWithValue("@Age", student.Age);
+                    command1.Parameters.AddWithValue("@Email", student.Email);
+                    command1.Parameters.AddWithValue("@PhoneNumber", student.PhoneNumber);
+                    command1.Parameters.AddWithValue("@Percentage", student.Percentage);
+                    command1.Parameters.AddWithValue("@DepartmentId", student.DepartmentId);
+                    int studentId = Convert.ToInt32(command1.ExecuteScalar());
+
+                    const string query2 = @"INSERT INTO StudentAudit(
+	                                       	StudentId,
+	                                    	ActionType,
+	                                    	NewPercentage
+	                                    )
+	                                    VALUES
+                                        ( @StudentId,
+                                          @Action,
+                                          @Percentage);";
+                    using var command2 = new SqlCommand(query2, connection, transaction);
+                    command2.Parameters.AddWithValue("@StudentId", studentId);
+                    command2.Parameters.AddWithValue("@Action", "INSERT");
+                    command2.Parameters.AddWithValue("@Percentage", student.Percentage);
+                    command2.ExecuteNonQuery();
+
+                    transaction.Commit();
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    return false;
+                }
+            }
+            catch(SqlException ex)
+            {
+                return false;
+            }
+        }
     }
 }

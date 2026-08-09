@@ -19,7 +19,8 @@ namespace AdoNetPractice
                     Console.WriteLine("3.Insert student");
                     Console.WriteLine("4.Update student");
                     Console.WriteLine("5.Delete student");
-                    Console.WriteLine("6.Exit");
+                    Console.WriteLine("6.Enroll student");
+                    Console.WriteLine("7.Exit");
 
                     Console.WriteLine("Enter your choice");
                     choice = int.Parse(Console.ReadLine());
@@ -137,6 +138,41 @@ namespace AdoNetPractice
                             }
                             break;
                         case 6:
+                            Console.WriteLine("Enter student details to enroll:");
+                            Console.WriteLine("First Name:");
+                            firstName = Console.ReadLine();
+                            Console.WriteLine("Last Name:");
+                            lastName = Console.ReadLine();
+                            Console.WriteLine("Age:");
+                            age = int.Parse(Console.ReadLine());
+                            Console.WriteLine("Email:");
+                            email = Console.ReadLine();
+                            Console.WriteLine("Phone Number:");
+                            phoneNumber = Console.ReadLine();
+                            Console.WriteLine("Percentage:");
+                            percentage = double.Parse(Console.ReadLine());
+                            Console.WriteLine("Department Id:");
+                            departmentId = int.Parse(Console.ReadLine());
+                            bool isEnrolled = _studentRepository.EnrollStudent(new Student
+                            {
+                                FirstName = firstName,
+                                LastName = lastName,
+                                Age = age,
+                                Email = email,
+                                PhoneNumber = phoneNumber,
+                                Percentage = percentage,
+                                DepartmentId = departmentId
+                            });
+                            if(isEnrolled)
+                            {
+                                Console.WriteLine("Student enrolled successfully");
+                            }
+                            else
+                            {
+                                Console.WriteLine("Failed to enroll student");
+                            }
+                            break;
+                        case 7:
                             return;
                         default:
                             Console.WriteLine("Invalid choice");
