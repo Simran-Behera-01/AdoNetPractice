@@ -298,5 +298,25 @@ namespace AdoNetPractice.Data
                 throw;
             }
         }
+
+        public DataSet DataSets()
+        {
+            try
+            {
+                using var connection = _connectionFactory.CreateConnection();
+                DataSet dataSet = new DataSet();
+                var query = @"SELECT * FROM Departments;
+                             SELECT * FROM Courses;";
+                using var adapter = new SqlDataAdapter(query, connection);
+                adapter.Fill(dataSet);
+                dataSet.Tables[0].TableName = "Departments";
+                dataSet.Tables[1].TableName = "Courses";
+                return dataSet;
+            }
+            catch (SqlException ex)
+            {
+                throw;
+            }
+        }
     }
 }

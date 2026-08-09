@@ -22,7 +22,9 @@ namespace AdoNetPractice
                     Console.WriteLine("6.Enroll student");
                     Console.WriteLine("7.Get students by department");
                     Console.WriteLine("8.Get department statistics");
-                    Console.WriteLine("9.Exit");
+                    Console.WriteLine("9.Get All Departments");
+                    Console.WriteLine("10.Get All Courses");
+                    Console.WriteLine("11.Exit");
 
                     Console.WriteLine("Enter your choice");
                     choice = int.Parse(Console.ReadLine());
@@ -200,6 +202,30 @@ namespace AdoNetPractice
                             Console.WriteLine($"Total Students: {stats.Item2}, Average Percentage: {stats.Item3}");
                             break;
                         case 9:
+                            var departmentsTable = _studentRepository.DataSets().Tables["Departments"];
+                            if (departmentsTable.Rows.Count == 0)
+                            {
+                                Console.WriteLine("No departments found");
+                                break;
+                            }
+                            foreach (System.Data.DataRow row in departmentsTable.Rows)
+                            {
+                                Console.WriteLine($"Id: {row["DepartmentId"]}, Name: {row["DepartmentName"]}");
+                            }
+                            break;
+                        case 10:
+                            var coursesTable = _studentRepository.DataSets().Tables["Courses"];
+                            if (coursesTable.Rows.Count == 0)
+                            {
+                                Console.WriteLine("No courses found");
+                                break;
+                            }
+                            foreach (System.Data.DataRow row in coursesTable.Rows)
+                            {
+                                Console.WriteLine($"Id: {row["CourseId"]}, Name: {row["CourseName"]}");
+                            }
+                            break;
+                        case 11:
                             return;
                         default:
                             Console.WriteLine("Invalid choice");
