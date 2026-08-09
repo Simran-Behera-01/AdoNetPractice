@@ -20,7 +20,8 @@ namespace AdoNetPractice
                     Console.WriteLine("4.Update student");
                     Console.WriteLine("5.Delete student");
                     Console.WriteLine("6.Enroll student");
-                    Console.WriteLine("7.Exit");
+                    Console.WriteLine("7.Get students by department");
+                    Console.WriteLine("8.Exit");
 
                     Console.WriteLine("Enter your choice");
                     choice = int.Parse(Console.ReadLine());
@@ -173,6 +174,20 @@ namespace AdoNetPractice
                             }
                             break;
                         case 7:
+                            Console.WriteLine("Enter department id to get students:");
+                            int deptId = int.Parse(Console.ReadLine());
+                            var studentsByDept = _studentRepository.GetStudentsByDepartment(deptId);
+                            if (studentsByDept.Count == 0)
+                            {
+                                Console.WriteLine("No students found in this department");
+                                break;
+                            }
+                            foreach (var student in studentsByDept)
+                            {
+                                Console.WriteLine($"Id: {student.Id}, Name: {student.FirstName} {student.LastName}, Age: {student.Age}, Email: {student.Email}, Phone: {student.PhoneNumber}, Percentage: {student.Percentage}, DepartmentId: {student.DepartmentId}");
+                            }
+                            break;
+                        case 8:
                             return;
                         default:
                             Console.WriteLine("Invalid choice");

@@ -2,6 +2,7 @@
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -226,15 +227,50 @@ namespace AdoNetPractice.Data
                 }
                 catch (Exception ex) 
                 {
-                    transaction.Rollback(); 
-                    Console.WriteLine(ex.Message); 
+                    transaction.Rollback();
+                    Console.WriteLine(ex.Message);
                 }
             }
-            catch (SqlException ex) 
-            { 
+            catch (SqlException ex)
+            {
                 Console.WriteLine(ex.Message);
             }
             return false;
+        }
+        
+        public List<Student> GetStudentsByDepartment(int departmentId)
+        {
+            List<Student> students = [];
+            try
+            {
+                using var connection = _connectionFactory.CreateConnection();
+                connection.Open();
+                var storedProcedure = @"GetStudentsByDepartment";
+                using var command = new SqlCommand(storedProcedure, connection);
+                command.CommandType = CommandType.StoredProcedure;
+                command.Parameters.Add("@DepartmentId", SqlDbType.Int).Value = departmentId;
+                using var reader = command.ExecuteReader();
+                while(reader.Read())
+                { 
+                     students.Add(
+                         new Student
+                         {
+                             Id = (int)reader["StudentId"],
+                             FirstName = (string)reader["FirstName"],
+                             LastName = (string)reader["LastName"],
+                             Age = (int)reader["Age"],
+                             Email = (string)reader["Email"],
+                             PhoneNumber = (string)reader["PhoneNumber"],
+                             Percentage = Convert.ToDouble(reader["Percentage"]),
+                             DepartmentId = (int)reader["DepartmentId"]
+                         });
+                }
+            }
+            catch(SqlException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return students;
         }
     }
 }
